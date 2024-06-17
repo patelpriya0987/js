@@ -61,7 +61,6 @@ class Person {
         console.log(`this person name is ${this.#name}`);
     }
 }
-
 let person1 = new Person('priya');
 let person2 = new Person('ragini');
 let person3 = new Person('prachi');

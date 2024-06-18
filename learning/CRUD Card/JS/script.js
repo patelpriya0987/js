@@ -9,7 +9,18 @@ let gender = document.getElementsByName("gender");
 let male = document.getElementById("male");
 let female = document.getElementById("female");
 
-let storage = [];
+const getData = () => {
+    let Data = JSON.parse(localStorage.getItem("data"));
+
+    if(Data){
+        return Data;
+    }else{
+        return [];
+    }
+}
+
+
+let storage = getData();
 const addData = () => {
     event.preventDefault();
     console.log(gender);
@@ -41,6 +52,9 @@ const addData = () => {
     number.value = "";
     duretion.value = "";
     gender.value = "";
+
+    let setData = JSON.stringify(storage);
+    localStorage.setItem("data", setData);
 }
 
 const displayData = () => {
@@ -48,7 +62,7 @@ const displayData = () => {
     table.innerHTML = "";
     storage.forEach((rec) => {
         table.innerHTML += `
-        <div class="shadow p-3 col-4 mx-auto rounded border py-5 mx-4">
+        <div class="shadow p-3 col-5 my-2 mx-auto rounded border py-5 mx-4">
             <h3>First Name : ${rec.fname}</h3>
             <h3>Last Name : ${rec.lname}</h3>
             <h3>Email : ${rec.email}</h3>
@@ -56,8 +70,11 @@ const displayData = () => {
             <h3>Number : ${rec.number}</h3>
             <h3>Duretion : ${rec.duretion}</h3>
             <h3>Gender : ${rec.gender}</h3>
+        <button class="btn btn-primary"> <i class="fa-solid fa-pen-to-square"></i> </button> || <button class="btn btn-danger"> <i class="fa-solid fa-trash"></i> </button>
             </div>
           </div>
         `
     })
 }
+
+displayData();

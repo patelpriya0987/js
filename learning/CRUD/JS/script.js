@@ -8,6 +8,8 @@ let duretion = document.getElementById("duration");
 let gender = document.getElementsByName("gender");
 let male = document.getElementById("male");
 let female = document.getElementById("female");
+let isEdit = false;
+let isIndex;
 
 const getData = () => {
     let Data = JSON.parse(localStorage.getItem("data"));
@@ -23,12 +25,10 @@ const getData = () => {
 let storage = getData();
 const addData = () => {
     event.preventDefault();
-    console.log(gender);
-    console.log(gender[0].checked);
 
     console.log(gender.value);
     let obj = {
-        id : storage.length + 1,
+        id : isIndex ? isIndex : storage.length + 1,
         fname: fname.value,
         lname: lname.value,
         email: email.value,
@@ -39,9 +39,33 @@ const addData = () => {
 
     }
 
-    storage = [...storage, obj];
-    console.log(obj);
-    console.log(storage);
+    if(isEdit){
+
+      console.log("obj",obj);
+
+      let data = [...storage];
+      let updatedRec = data.map((rec) => {
+
+        if(rec.id == isIndex){
+            return rec = obj;
+        }else{
+            return rec;
+        }
+
+      })
+      console.log('updated..',updatedRec);
+      storage = updatedRec;
+      isEdit = false;
+      isIndex = ' ';
+
+    }else{
+
+       storage = [...storage, obj];
+       console.log(obj);
+       console.log(storage);
+
+    }
+
 
     displayData();
 
@@ -58,6 +82,51 @@ const addData = () => {
     localStorage.setItem("data", setData);
 }
 
+let singleRecord = (id) => {
+   console.log("Click On Edit ..");
+
+   let data = [...storage];
+
+   let single = data.filter((d) => {
+
+      return d.id === id;
+
+   })
+
+   isEdit = true;
+   isIndex = id;
+
+   console.log("single", single[0] );
+
+   fname.value = single[0].fname;
+   lname.value = single[0].lname;
+   email.value = single[0].email;
+   course.value = single[0].course;
+   number.value = single[0].number;
+   duretion.value = single[0].duretion;
+   gender.value = single[0].gender;
+
+}
+
+let deletRec = (id) => {
+
+    console.log("delet..");
+    let data = [...storage]
+
+    let newRec = data.filter((rec) =>{
+        return rec.id != id
+    })
+
+    console.log('New Record ',newRec);
+
+    storage = newRec;
+
+    let setData = JSON.stringify(storage);
+    localStorage.setItem("data", setData);
+
+    displayData();
+
+}
 const displayData = () => {
 
     table.innerHTML = "";
@@ -72,8 +141,7 @@ const displayData = () => {
             <td>${rec.number}</td>
             <td>${rec.duretion}</td>
             <td>${rec.gender}</td>
-            <td><button class="btn btn-primary"> <i class="fa-solid fa-pen-to-square"></i> </button> || <button class="btn btn-danger"> <i class="fa-solid fa-trash"></i> </button></td>
-
+            <td><button class="btn btn-primary" onClick="return singleRecord(${rec.id})" > <i class="fa-solid fa-pen-to-square"></i> </button> || <button class="btn btn-danger" onClick="return deletRec(${rec.id})"> <i class="fa-solid fa-trash"></i> </button> ||  <button class="btn btn-warning"> <i class="fa-solid fa-eye"></i>  </button></td>
         </tr>
         `
     })
